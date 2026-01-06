@@ -44,12 +44,6 @@ hide_st_style = """
             </style>
             """
 st.markdown(hide_st_style, unsafe_allow_html=True)
-
-# Итоговый результат за месяц
-total_monthly = (daily_power + daily_water) * 30
-st.success(f"### 💰 Итоговая экономия за месяц: {round(total_monthly, 2)} тенге")
-
-st.write("💡 *Совет жюри: Заменив одну лампу 100Вт на LED 12Вт, вы бережете бюджет!*")
 hide_st_style = """
             <style>
             #MainMenu {visibility: hidden;}
@@ -62,3 +56,9 @@ hide_st_style = """
             </style>
             """
 st.markdown(hide_st_style, unsafe_allow_html=True)
+
+# Итоговый результат за месяц
+total_monthly = (daily_power + daily_water) * 30
+st.success(f"### 💰 Итоговая экономия за месяц: {round(total_monthly, 2)} тенге")
+
+st.write("💡 *Совет жюри: Заменив одну лампу 100Вт на LED 12Вт, вы бережете бюджет!*")
