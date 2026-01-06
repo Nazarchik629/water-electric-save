@@ -36,6 +36,15 @@ with col2:
 
 st.markdown("---")
 
+hide_st_style = """
+            <style>
+            #MainMenu {visibility: hidden;}
+            footer {visibility: hidden;}
+            header {visibility: hidden;}
+            </style>
+            """
+st.markdown(hide_st_style, unsafe_allow_html=True)
+
 # Итоговый результат за месяц
 total_monthly = (daily_power + daily_water) * 30
 st.success(f"### 💰 Итоговая экономия за месяц: {round(total_monthly, 2)} тенге")
