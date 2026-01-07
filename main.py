@@ -113,25 +113,37 @@ with st.expander("💬 Оставить отзыв о проекте (Назар
 st.write("")
 st.info("🎯 **ЦЕЛЬ ПРОЕКТА: Помочь жителям Алматы сократить потребление ресурсов и беречь природу нашего Казахстана!**")
 
-def calculate_city_saving():
-    # Данные для расчета (примерные для Алматы)
-    num_households = 600000  # Кол-во квартир/домов
-    old_lamp_watt = 100      # Обычная лампа
-    led_lamp_watt = 10       # LED лампа
-    hours_per_day = 5        # Сколько часов в среднем горит свет
-    almaty_tariff = 28       # Средний тариф в тенге за кВт*ч (на 2026 год)
-    
-    # Расчет экономии в час на одну лампу (в кВт)
-    saving_per_hour_kw = (old_lamp_watt - led_lamp_watt) / 1000
-    
-    # Экономия всего города за год (в тенге)
-    city_saving_year = saving_per_hour_kw * hours_per_day * 365 * num_households * almaty_tariff
-    
-    # Округляем до миллиардов
-    billions = city_saving_year / 1_000_000_000
-    return round(billions, 2)
+# Данные для расчета
+tariff_almaty = 28.0  # Тенге за 1 кВт*ч
+households_almaty = 600000  # Примерное кол-во домохозяйств в Алматы
 
-print(f" ⚡Если каждый алматинец заменит 1 лампу, город сэкономит {calculate_city_saving()} млрд тенге в год!")
+def calculate_savings(power_old, power_new, hours_per_day, days):
+    # 1. Считаем экономию для одного пользователя (в тенге)
+    watt_saved = power_old - power_new
+    kwh_saved = (watt_saved * hours_per_day * days) / 1000
+    money_saved = kwh_saved * tariff_almaty
+    
+    # 2. Считаем масштаб для ГОРОДА (если каждый заменит 1 лампу на 1 год)
+    # 0.09 кВт (разница между 100Вт и 10Вт) * 5 часов * 365 дней * тариф * кол-во домов
+    city_savings_year = (0.09 * 5 * 365 * tariff_almaty * households_almaty)
+    city_billions = round(city_savings_year / 1_000_000_000, 1)
+    
+    return round(money_saved, 2), city_billions
+
+# Пример использования:
+old_w = 100  # Ватт старая лампа
+new_w = 12   # Ватт LED лампа
+h = 5        # Часов в день
+d = 30       # Дней (месяц)
+
+user_result, city_result = calculate_savings(old_w, new_w, h, d)
+
+
+print(f"✅ Итоговая экономия за месяц: {user_result} тенге")
+print("-" * 30)
+print(f"🏛️ ПОЛЬЗА ДЛЯ ГОСУДАРСТВА:")
+print(f"Если каждый алматинец заменит всего 1 лампу,")
+print(f"наш любимый город сэкономит {city_result} МИЛЛИАРДА тенге в год!")
 
 # Итоговая плашка
 total_monthly = (daily_power + daily_water_money) * 30
