@@ -57,22 +57,36 @@ hide_st_style = """
             """
 st.markdown(hide_st_style, unsafe_allow_html=True)
 
-def calculate_eco_bonus(water_liters):
-    # Коэффициент: 1 кВтч на 2000 литров (или 0.0005 кВтч на 1 литр)
-    energy_saved = water_liters * 0.0005
-    
-    # Средний тариф в Алматы (примерно 25 тенге за 1 кВтч)
-    money_saved = energy_saved * 25 
-    
-    return energy_saved, money_saved
+import streamlit as st
 
-# ПРИМЕР ВСТАВКИ В ОСНОВНУЮ ПРОГРАММУ:
-liters = float(input("Сколько литров воды вы сэкономили за сегодня? "))
-kwh, tenge = calculate_eco_bonus(liters)
+# ... твой существующий код (ввод данных) ...
 
-print(f"--- ВАШ ВКЛАД В ЭКОЛОГИЮ КАЗАХСТАНА ---")
-print(f"Вы косвенно сберегли {kwh:.4f} кВт⋅ч электроэнергии города.")
-print(f"Это сэкономило бюджету еще {tenge:.2f} тенге!")
+# Блок расчетов (вставь это после получения данных от пользователя)
+if st.button('Рассчитать экономию'):
+    # 1. Расчет прямой экономии
+    # Допустим, твои переменные называются water и electricity
+    direct_money = (water * 0.15) + (electricity * 25) # Примерные тарифы
+    
+    # 2. ТВОЯ СЕКРЕТНАЯ ФОРМУЛА ДЛЯ 1-ГО МЕСТА
+    # Косвенная экономия: на каждый 1 литр воды город тратит 0.0005 кВтч
+    indirect_kwh = water * 0.0005
+    indirect_money = indirect_kwh * 25 # Переводим спасенные кВтч города в тенге
+    
+    total_result = direct_money + indirect_money
+
+    # --- ВЫВОД НА ЭКРАН САЙТА ---
+    st.header("📊 Итоги экономии за месяц")
+    
+    col1, col2 = st.columns(2)
+    with col1:
+        st.metric("Прямая выгода (Ваш кошелек)", f"{direct_money:.2f} ₸")
+    with col2:
+        st.metric("Эко-бонус (Энергия города)", f"{indirect_money:.2f} ₸", delta="Спасенные кВтч")
+
+    st.success(f"🔥 Общая сумма экономии для Казахстана: {total_result:.2f} тенге!")
+    
+    st.info(f"💡 Знаете ли вы? Сэкономив {water} л воды, вы сберегли {indirect_kwh:.4f} кВт⋅ч "
+            f"электроэнергии, которую насосы Алматы не потратили на доставку воды в ваш кран.")
 
 # Итоговый результат за месяц
 total_monthly = (daily_power + daily_water) * 30
