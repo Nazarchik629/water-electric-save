@@ -102,20 +102,37 @@ if submit:
         st.warning("Пожалуйста, заполни все поля!")
 
 # 6. Блок расчетов и секретная формула
-if st.button('Рассчитать итоги'):
-    # Экономия воды в литрах
-    saved_liters = liters_per_min * minutes
-    # Экономия электричества в кВт
-    saved_kwh = (watt / 1000) * hours
+import streamlit as st
+import smtplib
+from email.mime.text import MIMEText
+
+# --- 1. ФУНКЦИЯ ОТПРАВКИ (вставь свои данные) ---
+def send_feedback_email(user_name, rating, user_text):
+    sender_email = "твоя_почта@gmail.com"  # Твоя почта
+    receiver_email = "твоя_почта@gmail.com" # Куда придут отзывы
+    password = "xxxx xxxx xxxx xxxx"       # 16-значный код из Google
     
-    # Прямая выгода (деньги)
+    msg = MIMEText(f"Имя: {user_name}\nОценка: {rating}/5\nОтзыв: {user_text}")
+    msg['Subject'] = f"Zerde: Новый отзыв от {user_name}"
+    
+    try:
+        with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
+            server.login(sender_email, password)
+            server.sendmail(sender_email, receiver_email, msg.as_string())
+        return True
+    except:
+        return False
+
+# --- 6. БЛОК РАСЧЕТОВ ---
+# Добавляем key="main_calc", чтобы не было ошибки дубликата
+if st.button('Рассчитать итоги', key="main_calc"):
+    # Твои формулы
+    saved_liters = liters_per_min * minutes
+    saved_kwh = (watt / 1000) * hours
     direct_money = daily_power + daily_water_money
     
-    # Косвенная экономия (энергия города на перекачку воды)
-    # На каждый 1 литр воды город тратит примерно 0.0005 кВт*ч
     indirect_kwh = saved_liters * 0.0005
     indirect_money = indirect_kwh * tarif
-    
     total_result = direct_money + indirect_money
     
     st.header("📊 Итоги экономии")
@@ -127,14 +144,33 @@ if st.button('Рассчитать итоги'):
         st.metric("Эко-бонус (Энергия города)", f"{round(indirect_money, 4)} тг")
         
     st.success(f"🔥 Общая сумма экономии для Казахстана: {round(total_result, 2)} тенге в день!")
-    
     st.info(f"💡 Знаете ли вы? Сэкономив {saved_liters} л воды, вы сберегли {round(indirect_kwh, 4)} кВт*ч электроэнергии, которую насосы Алматы не потратили на подачу воды.")
+    st.balloons()
 
 st.divider()
 
-# 7. Итоговый результат за месяц
+# --- 7. ИТОГОВЫЙ РЕЗУЛЬТАТ ЗА МЕСЯЦ ---
 st.info("**Цель проекта:** Помочь жителям Алматы сократить потребление ресурсов.")
 total_monthly = (daily_power + daily_water_money) * 30
-st.success(f"### 📅 Итоговая экономия за месяц: {round(total_monthly, 2)} тенге")
-
+st.success(f"### 🗓️ Итоговая экономия за месяц: {round(total_monthly, 2)} тенге")
 st.write("💡 **Совет дня:** Замените одну лампу 100Вт на LED 12Вт, и вы начнете экономить сразу!")
+
+# --- 8. ОТДЕЛЬНАЯ КНОПКА ДЛЯ ОТЗЫВА (РАЗВОРАЧИВАЮЩАЯСЯ) ---
+st.markdown("---")
+with st.expander("💬 Оставить отзыв о проекте"):
+    with st.form("feedback_form", clear_on_submit=True):
+        f_name = st.text_input("Ваше имя")
+        f_stars = st.select_slider("Ваша оценка", options=[1, 2, 3, 4, 5], value=5)
+        f_comment = st.text_area("Ваш комментарий")
+        
+        submit_feedback = st.form_submit_button("Подтвердить и отправить")
+
+    if submit_feedback:
+        if f_name and f_comment:
+            with st.spinner("Отправка..."):
+                if send_feedback_email(f_name, f_stars, f_comment):
+                    st.success("Отзыв успешно отправлен Назару!")
+                else:
+                    st.error("Ошибка отправки. Проверь пароль приложения в коде.")
+        else:
+            st.warning("Заполни все поля!")
