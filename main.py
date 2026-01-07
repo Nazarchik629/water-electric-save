@@ -113,6 +113,26 @@ with st.expander("💬 Оставить отзыв о проекте (Назар
 st.write("")
 st.info("🎯 **ЦЕЛЬ ПРОЕКТА: Помочь жителям Алматы сократить потребление ресурсов и беречь природу нашего Казахстана!**")
 
+def calculate_city_saving():
+    # Данные для расчета (примерные для Алматы)
+    num_households = 600000  # Кол-во квартир/домов
+    old_lamp_watt = 100      # Обычная лампа
+    led_lamp_watt = 10       # LED лампа
+    hours_per_day = 5        # Сколько часов в среднем горит свет
+    almaty_tariff = 28       # Средний тариф в тенге за кВт*ч (на 2026 год)
+    
+    # Расчет экономии в час на одну лампу (в кВт)
+    saving_per_hour_kw = (old_lamp_watt - led_lamp_watt) / 1000
+    
+    # Экономия всего города за год (в тенге)
+    city_saving_year = saving_per_hour_kw * hours_per_day * 365 * num_households * almaty_tariff
+    
+    # Округляем до миллиардов
+    billions = city_saving_year / 1_000_000_000
+    return round(billions, 2)
+
+print(f" ⚡Если каждый алматинец заменит 1 лампу, город сэкономит {calculate_city_saving()} млрд тенге в год!")
+
 # Итоговая плашка
 total_monthly = (daily_power + daily_water_money) * 30
 st.success(f"### 🗓️ Итоговая экономия за месяц: {round(total_monthly, 2)} тенге")
