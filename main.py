@@ -57,6 +57,13 @@ hide_st_style = """
             """
 st.markdown(hide_st_style, unsafe_allow_html=True)
 
+# Расчет косвенной экономии электричества через воду
+water_liters = float(input("Сколько литров воды вы сэкономили? "))
+# 1 кВтч тратится на 2000 литров (0.0005 кВтч на 1 литр)
+energy_indirect_saved = water_liters * 0.0005 
+
+print(f"Сэкономив воду, вы также сберегли {energy_indirect_saved} кВт⋅ч электроэнергии на городских насосах!")
+
 # Итоговый результат за месяц
 total_monthly = (daily_power + daily_water) * 30
 st.success(f"### 💰 Итоговая экономия за месяц: {round(total_monthly, 2)} тенге")
