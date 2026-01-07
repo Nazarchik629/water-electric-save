@@ -57,12 +57,22 @@ hide_st_style = """
             """
 st.markdown(hide_st_style, unsafe_allow_html=True)
 
-# Расчет косвенной экономии электричества через воду
-water_liters = float(input("Сколько литров воды вы сэкономили? "))
-# 1 кВтч тратится на 2000 литров (0.0005 кВтч на 1 литр)
-energy_indirect_saved = water_liters * 0.0005 
+def calculate_eco_bonus(water_liters):
+    # Коэффициент: 1 кВтч на 2000 литров (или 0.0005 кВтч на 1 литр)
+    energy_saved = water_liters * 0.0005
+    
+    # Средний тариф в Алматы (примерно 25 тенге за 1 кВтч)
+    money_saved = energy_saved * 25 
+    
+    return energy_saved, money_saved
 
-print(f"Сэкономив воду, вы также сберегли {energy_indirect_saved} кВт⋅ч электроэнергии на городских насосах!")
+# ПРИМЕР ВСТАВКИ В ОСНОВНУЮ ПРОГРАММУ:
+liters = float(input("Сколько литров воды вы сэкономили за сегодня? "))
+kwh, tenge = calculate_eco_bonus(liters)
+
+print(f"--- ВАШ ВКЛАД В ЭКОЛОГИЮ КАЗАХСТАНА ---")
+print(f"Вы косвенно сберегли {kwh:.4f} кВт⋅ч электроэнергии города.")
+print(f"Это сэкономило бюджету еще {tenge:.2f} тенге!")
 
 # Итоговый результат за месяц
 total_monthly = (daily_power + daily_water) * 30
