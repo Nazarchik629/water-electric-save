@@ -48,6 +48,56 @@ with col2:
 
 st.markdown("---")
 
+import streamlit as st
+import smtplib
+from email.mime.text import MIMEText
+
+# --- ФУНКЦИЯ ОТПРАВКИ (скрытая логика) ---
+def send_auto_email(user_name, rating, user_text):
+    # НАСТРОЙКИ (заполни здесь свои данные)
+    sender_email = "solodovnikov.nazarchik.s@gmail.com"
+    receiver_email = "solodovnikov.nazarchik.s@gmail.com"  # Куда придет письмо
+    password = "zvdy hgbv imcd fnjg" # 16-значный код от Google
+
+    # Текст письма
+    subject = f"Новый отзыв: {rating} звезд от {user_name}"
+    body = f"Имя пользователя: {user_name}\nОценка: {rating}/5\nОтзыв: {user_text}"
+    
+    msg = MIMEText(body)
+    msg['Subject'] = subject
+    msg['From'] = sender_email
+    msg['To'] = receiver_email
+
+    try:
+        # Подключение к серверу Gmail
+        with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
+            server.login(sender_email, password)
+            server.sendmail(sender_email, receiver_email, msg.as_string())
+        return True
+    except Exception as e:
+        st.error(f"Ошибка при отправке: {e}")
+        return False
+
+# --- ИНТЕРФЕЙС САЙТА ---
+st.header("Оставьте отзыв о проекте")
+
+with st.form("feedback_form", clear_on_submit=True):
+    name = st.text_input("Ваше имя")
+    stars = st.select_slider("Оцените проект (из 5)", options=[1, 2, 3, 4, 5], value=5)
+    comment = st.text_area("Ваш отзыв")
+    
+    submit = st.form_submit_button("Подтвердить")
+
+if submit:
+    if name and comment:
+        with st.spinner("Отправка отзыва..."):
+            success = send_auto_email(name, stars, comment)
+            if success:
+                st.success(f"Спасибо, {name}! Ваш отзыв успешно отправлен.")
+                st.balloons()
+    else:
+        st.warning("Пожалуйста, заполните имя и текст отзыва.")
+
 # 6. Блок расчетов и секретная формула
 if st.button('Рассчитать итоги'):
     # Экономия воды в литрах
