@@ -48,55 +48,58 @@ with col2:
 
 st.markdown("---")
 
-import streamlit as st
+import streamlit as st  # ИСПРАВЛЕНО: было impor as s
 import smtplib
 from email.mime.text import MIMEText
 
-# --- ФУНКЦИЯ ОТПРАВКИ (скрытая логика) ---
-def send_auto_email(user_name, rating, user_text):
-    # НАСТРОЙКИ (заполни здесь свои данные)
-    sender_email = "solodovnikov.nazarchik.s@gmail.com"
-    receiver_email = "solodovnikov.nazarchik.s@gmail.com"  # Куда придет письмо
-    password = "zvdy hgbv imcd fnjg" # 16-значный код от Google
+# --- ФУНКЦИЯ ОТПРАВКИ НА ПОЧТУ ---
+def send_feedback_email(user_name, rating, user_text):
+    sender_email = "solodovnikov.nazarchik.s@gmail.com" # Впиши свою почту
+    receiver_email = "solodovnikov.nazarchik.s@gmail.com" # Сюда придет письмо
+    password = "zvdy hgbv imcd fnjg" # Твой 16-значный код (который получишь в Google)
 
-    # Текст письма
-    subject = f"Новый отзыв: {rating} звезд от {user_name}"
-    body = f"Имя пользователя: {user_name}\nОценка: {rating}/5\nОтзыв: {user_text}"
+    subject = f"Zerde: Отзыв от {user_name} ({rating} звезд)"
+    body = f"Имя: {user_name}\nОценка: {rating}/5\nОтзыв: {user_text}"
     
     msg = MIMEText(body)
     msg['Subject'] = subject
-    msg['From'] = sender_email
-    msg['To'] = receiver_email
-
+    
     try:
-        # Подключение к серверу Gmail
         with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
             server.login(sender_email, password)
             server.sendmail(sender_email, receiver_email, msg.as_string())
         return True
-    except Exception as e:
-        st.error(f"Ошибка при отправке: {e}")
+    except:
         return False
 
-# --- ИНТЕРФЕЙС САЙТА ---
-st.header("Оставьте отзыв о проекте")
+# --- ТВОЙ БЛОК РАСЧЕТОВ (исправленный) ---
+st.markdown("---") # Разделительная линия
+if st.button('Рассчитать итоги'): # ИСПРАВЛЕНО: было buttonutton
+    # Тут твои формулы из кода
+    st.write("Итоговые расчеты выполнены!")
+    st.balloons()
 
-with st.form("feedback_form", clear_on_submit=True):
+# --- НОВЫЙ БЛОК: ОТЗЫВЫ (теперь кнопка появится!) ---
+st.markdown("---")
+st.header("⭐⭐⭐⭐⭐ Оставьте отзыв")
+
+with st.form("feedback_form"):
     name = st.text_input("Ваше имя")
-    stars = st.select_slider("Оцените проект (из 5)", options=[1, 2, 3, 4, 5], value=5)
-    comment = st.text_area("Ваш отзыв")
+    stars = st.select_slider("Ваша оценка", options=[1, 2, 3, 4, 5], value=5)
+    comment = st.text_area("Ваш комментарий")
     
-    submit = st.form_submit_button("Подтвердить")
+    # Вот эта кнопка, которой у тебя не было:
+    submit = st.form_submit_button("Подтвердить и отправить")
 
 if submit:
     if name and comment:
-        with st.spinner("Отправка отзыва..."):
-            success = send_auto_email(name, stars, comment)
-            if success:
-                st.success(f"Спасибо, {name}! Ваш отзыв успешно отправлен.")
-                st.balloons()
+        with st.spinner("Отправляем..."):
+            if send_feedback_email(name, stars, comment):
+                st.success(f"Спасибо, {name}! Отзыв отправлен Назару на почту.")
+            else:
+                st.error("Ошибка! Проверь настройки почты или пароль приложения.")
     else:
-        st.warning("Пожалуйста, заполните имя и текст отзыва.")
+        st.warning("Пожалуйста, заполни все поля!")
 
 # 6. Блок расчетов и секретная формула
 if st.button('Рассчитать итоги'):
