@@ -47,73 +47,18 @@ with col2:
     st.info(f"Экономия в день: {round(daily_water_money, 2)} тенге")
 
 st.markdown("---")
-
-import streamlit as st  # ИСПРАВЛЕНО: было impor as s
-import smtplib
-from email.mime.text import MIMEText
-
-# --- ФУНКЦИЯ ОТПРАВКИ НА ПОЧТУ ---
-def send_feedback_email(user_name, rating, user_text):
-    sender_email = "solodovnikov.nazarchik.s@gmail.com" # Впиши свою почту
-    receiver_email = "solodovnikov.nazarchik.s@gmail.com" # Сюда придет письмо
-    password = "zvdy hgbv imcd fnjg" # Твой 16-значный код (который получишь в Google)
-
-    subject = f"Zerde: Отзыв от {user_name} ({rating} звезд)"
-    body = f"Имя: {user_name}\nОценка: {rating}/5\nОтзыв: {user_text}"
-    
-    msg = MIMEText(body)
-    msg['Subject'] = subject
-    
-    try:
-        with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
-            server.login(sender_email, password)
-            server.sendmail(sender_email, receiver_email, msg.as_string())
-        return True
-    except:
-        return False
-
-# --- ТВОЙ БЛОК РАСЧЕТОВ (исправленный) ---
-st.markdown("---") # Разделительная линия
-if st.button('Рассчитать итоги'): # ИСПРАВЛЕНО: было buttonutton
-    # Тут твои формулы из кода
-    st.write("Итоговые расчеты выполнены!")
-    st.balloons()
-
-# --- НОВЫЙ БЛОК: ОТЗЫВЫ (теперь кнопка появится!) ---
-st.markdown("---")
-st.header("⭐⭐⭐⭐⭐ Оставьте отзыв")
-
-with st.form("feedback_form"):
-    name = st.text_input("Ваше имя")
-    stars = st.select_slider("Ваша оценка", options=[1, 2, 3, 4, 5], value=5)
-    comment = st.text_area("Ваш комментарий")
-    
-    # Вот эта кнопка, которой у тебя не было:
-    submit = st.form_submit_button("Подтвердить и отправить")
-
-if submit:
-    if name and comment:
-        with st.spinner("Отправляем..."):
-            if send_feedback_email(name, stars, comment):
-                st.success(f"Спасибо, {name}! Отзыв отправлен Назару на почту.")
-            else:
-                st.error("Ошибка! Проверь настройки почты или пароль приложения.")
-    else:
-        st.warning("Пожалуйста, заполни все поля!")
-
-# 6. Блок расчетов и секретная формула
 import streamlit as st
 import smtplib
 from email.mime.text import MIMEText
 
-# --- 1. ФУНКЦИЯ ОТПРАВКИ (вставь свои данные) ---
+# --- 1. ТВОЯ ФУНКЦИЯ ОТПРАВКИ (Вставь свой 16-значный код сюда!) ---
 def send_feedback_email(user_name, rating, user_text):
-    sender_email = "твоя_почта@gmail.com"  # Твоя почта
-    receiver_email = "твоя_почта@gmail.com" # Куда придут отзывы
-    password = "xxxx xxxx xxxx xxxx"       # 16-значный код из Google
+    sender_email = "solodovnikov.nazarchik.s@gmail.com" 
+    receiver_email = "solodovnikov.nazarchik.s@gmail.com" 
+    password = "sgpw hfta ritp nswe" # Сюда 16 букв от Google
     
     msg = MIMEText(f"Имя: {user_name}\nОценка: {rating}/5\nОтзыв: {user_text}")
-    msg['Subject'] = f"Zerde: Новый отзыв от {user_name}"
+    msg['Subject'] = f"Zerde: Отзыв от {user_name}"
     
     try:
         with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
@@ -123,54 +68,52 @@ def send_feedback_email(user_name, rating, user_text):
     except:
         return False
 
-# --- 6. БЛОК РАСЧЕТОВ ---
-# Добавляем key="main_calc", чтобы не было ошибки дубликата
-if st.button('Рассчитать итоги', key="main_calc"):
-    # Твои формулы
+# --- 2. БЛОК РАСЧЕТОВ И СЕКРЕТНАЯ ФОРМУЛА ---
+st.divider()
+if st.button('Рассчитать итоги', key="final_calc_button"):
+    # Секретные расчеты
     saved_liters = liters_per_min * minutes
     saved_kwh = (watt / 1000) * hours
     direct_money = daily_power + daily_water_money
     
+    # Секретная формула (энергия города на перекачку воды)
     indirect_kwh = saved_liters * 0.0005
-    indirect_money = indirect_kwh * tarif
+    indirect_money = indirect_kwh * 25 # Тариф Алматы
     total_result = direct_money + indirect_money
     
     st.header("📊 Итоги экономии")
     
-    res_col1, res_col2 = st.columns(2)
-    with res_col1:
-        st.metric("Прямая выгода (Ваш кошелек)", f"{round(direct_money, 2)} тг")
-    with res_col2:
-        st.metric("Эко-бонус (Энергия города)", f"{round(indirect_money, 4)} тг")
+    col1, col2 = st.columns(2)
+    with col1:
+        st.metric("Прямая выгода", f"{round(direct_money, 2)} тг")
+    with col2:
+        st.metric("Эко-бонус (энергия города)", f"{round(indirect_money, 4)} тг")
         
     st.success(f"🔥 Общая сумма экономии для Казахстана: {round(total_result, 2)} тенге в день!")
-    st.info(f"💡 Знаете ли вы? Сэкономив {saved_liters} л воды, вы сберегли {round(indirect_kwh, 4)} кВт*ч электроэнергии, которую насосы Алматы не потратили на подачу воды.")
+    st.info(f"💡 **Секретный факт:** Чтобы подать вам {saved_liters} л воды, насосы Алматы тратят {round(indirect_kwh, 4)} кВт*ч. Экономя воду, вы экономите свет всего города!")
     st.balloons()
 
-st.divider()
-
-# --- 7. ИТОГОВЫЙ РЕЗУЛЬТАТ ЗА МЕСЯЦ ---
-st.info("**Цель проекта:** Помочь жителям Алматы сократить потребление ресурсов.")
-total_monthly = (daily_power + daily_water_money) * 30
-st.success(f"### 🗓️ Итоговая экономия за месяц: {round(total_monthly, 2)} тенге")
-st.write("💡 **Совет дня:** Замените одну лампу 100Вт на LED 12Вт, и вы начнете экономить сразу!")
-
-# --- 8. ОТДЕЛЬНАЯ КНОПКА ДЛЯ ОТЗЫВА (РАЗВОРАЧИВАЮЩАЯСЯ) ---
-st.markdown("---")
-with st.expander("💬 Оставить отзыв о проекте"):
-    with st.form("feedback_form", clear_on_submit=True):
+# --- 3. КНОПКА ОТЗЫВА (ПОСЛЕ РАСЧЕТА) ---
+st.write("") # Отступ
+with st.expander("💬 Оставить отзыв о проекте (Назару на почту)"):
+    with st.form("unique_feedback_form", clear_on_submit=True):
         f_name = st.text_input("Ваше имя")
-        f_stars = st.select_slider("Ваша оценка", options=[1, 2, 3, 4, 5], value=5)
-        f_comment = st.text_area("Ваш комментарий")
-        
+        f_stars = st.select_slider("Оценка", options=[1, 2, 3, 4, 5], value=5)
+        f_comment = st.text_area("Ваш отзыв")
         submit_feedback = st.form_submit_button("Подтвердить и отправить")
 
     if submit_feedback:
         if f_name and f_comment:
-            with st.spinner("Отправка..."):
-                if send_feedback_email(f_name, f_stars, f_comment):
-                    st.success("Отзыв успешно отправлен Назару!")
-                else:
-                    st.error("Ошибка отправки. Проверь пароль приложения в коде.")
-        else:
-            st.warning("Заполни все поля!")
+            if send_feedback_email(f_name, f_stars, f_comment):
+                st.success("Спасибо! Отзыв улетел на почту.")
+            else:
+                st.error("Ошибка! Проверь пароль приложения.")
+
+# --- 4. ЦЕЛЬ ПРОЕКТА (ЖИРНО И СО СМАЙЛИКОМ) ---
+st.write("")
+st.info("🎯 **ЦЕЛЬ ПРОЕКТА: Помочь жителям Алматы сократить потребление ресурсов и беречь природу нашего Казахстана!**")
+
+# Итоговая плашка
+total_monthly = (daily_power + daily_water_money) * 30
+st.success(f"### 🗓️ Итоговая экономия за месяц: {round(total_monthly, 2)} тенге")
+st.write("💡 **Совет дня:** Замените одну лампу 100Вт на LED 12Вт, и вы начнете экономить сразу!")
