@@ -58,12 +58,13 @@ hide_st_style = """
 
 st.markdown(hide_st_style, unsafe_allow_html=True)
  
-impor as s
+ import streamlit as st
+
 
 # ... твой существующий код (ввод данных) ...
 
 # Блок расчетов (вставь это после получения данных от пользователя)
-if st.buttonutton('Рассчитать эко'):
+if st.button('Рассчитать эко'):
     water = 10 * 3 
     electricity = (100 / 1000) * 5
     
