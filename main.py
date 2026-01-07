@@ -56,6 +56,41 @@ hide_st_style = """
             </style>
             """
 st.markdown(hide_st_style, unsafe_allow_html=True)
+st.divider()
+st.subheader("📝 Оставьте отзыв о проекте")
+
+# Создаем форму для сбора данных
+with st.form("feedback_form"):
+    name = st.text_input("Ваше имя:")
+    
+    # Слайдер для звезд (от 1 до 5)
+    stars = st.select_slider("Ваша оценка проекта:", options=["⭐", "⭐⭐", "⭐⭐⭐", "⭐⭐⭐⭐", "⭐⭐⭐⭐⭐"])
+    
+    feedback_text = st.text_area("Ваши предложения или отзыв:")
+    
+    # Скрытая ссылка на твой Formspree (замени 'ВАШ_ID' на то, что скопировал)
+    contact_url = "https://formspree.io/f/xbdlndab" 
+    
+    submit_button = st.form_submit_button("Отправить отзыв на почту")
+
+    if submit_button:
+        if name and feedback_text:
+            import requests
+            # Данные для отправки
+            data = {
+                "Имя": name,
+                "Оценка": stars,
+                "Отзыв": feedback_text
+            }
+            # Отправляем запрос на почту через сервис
+            response = requests.post(contact_url, data=data)
+            
+            if response.status_code == 200:
+                st.success("Спасибо! Отзыв успешно отправлен на сервис .")
+            else:
+                st.error("Произошла ошибка при отправке. Проверьте ID формы.")
+        else:
+            st.warning("Пожалуйста, заполните все поля перед отправкой.")
 
 import streamlit as st
 
@@ -101,4 +136,6 @@ st.info("📢 **Цель проекта:** Помочь жителям Алма�
 total_monthly = (daily_power + daily_water) * 30
 st.success(f"### 💰 Итоговая экономия за месяц: {round(total_monthly, 2)} тенге")
 
-st.write("💡 *Совет жюри: Заменив одну лампу 100Вт на LED 12Вт, вы бережете бюджет!*")
+ге")
+
+st.write("💡 *Совет жюри: Заменив одну лампу 100Вт на LED 12Вт, вы бережете бюдже
