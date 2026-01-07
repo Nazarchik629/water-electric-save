@@ -54,7 +54,8 @@ hide_st_style = """
             .stAppDeployButton {display: none;}
             #viewerBadge {display: none;}
             </style>
-            """
+           """
+import requests
 st.markdown(hide_st_style, unsafe_allow_html=True)
 st.divider()
 st.subheader("📝 Оставьте отзыв о проекте")
