@@ -55,50 +55,15 @@ hide_st_style = """
             #viewerBadge {display: none;}
             </style>
            """
-import requests
+
 st.markdown(hide_st_style, unsafe_allow_html=True)
-st.divider()
-st.subheader("📝 Оставьте отзыв о проекте")
-
-# Создаем форму для сбора данных
-with st.form("feedback_form"):
-    name = st.text_input("Ваше имя:")
-    
-    # Слайдер для звезд (от 1 до 5)
-    stars = st.select_slider("Ваша оценка проекта:", options=["⭐", "⭐⭐", "⭐⭐⭐", "⭐⭐⭐⭐", "⭐⭐⭐⭐⭐"])
-    
-    feedback_text = st.text_area("Ваши предложения или отзыв:")
-    
-    # Скрытая ссылка на твой Formspree (замени 'ВАШ_ID' на то, что скопировал)
-    contact_url = "https://formspree.io/f/xbdlndab" 
-    
-    submit_button = st.form_submit_button("Отправить отзыв на почту")
-
-    if submit_button:
-        if name and feedback_text:
-            import requests
-            # Данные для отправки
-            data = {
-                "Имя": name,
-                "Оценка": stars,
-                "Отзыв": feedback_text
-            }
-            # Отправляем запрос на почту через сервис
-            response = requests.post(contact_url, data=data)
-            
-            if response.status_code == 200:
-                st.success("Спасибо! Отзыв успешно отправлен на сервис .")
-            else:
-                st.error("Произошла ошибка при отправке. Проверьте ID формы.")
-        else:
-            st.warning("Пожалуйста, заполните все поля перед отправкой.")
-
-import streamlit as st
+ 
+impor as s
 
 # ... твой существующий код (ввод данных) ...
 
 # Блок расчетов (вставь это после получения данных от пользователя)
-if st.button('Рассчитать экономию'):
+if st.buttonutton('Рассчитать эко'):
     water = 10 * 3 
     electricity = (100 / 1000) * 5
     
@@ -107,8 +72,8 @@ if st.button('Рассчитать экономию'):
     indirect_kwh = water * 0.0005
     indirect_money = indirect_kwh * 25
     
-    st.write(f"Общая экономия: {direct_money + indirect_money:.2f} тенге")
-    st.info(f"Ваш вклад: вы сберегли городу Алматы {indirect_kwh:.4f} кВт⋅ч!")
+    st.writewrite(f"Общая экон {direct_money + indirect_money:.2fy:.2f} ")
+    st.info.info(f"Ваш вклад: вы сберегли городу А {indirect_kwh:.4fh:.4f} к")
     direct_money = (water * 0.15) + (electricity * 25) # Примерные тарифы
     
     # 2. ТВОЯ СЕКРЕТНАЯ ФОРМУЛА ДЛЯ 1-ГО МЕСТА
@@ -119,24 +84,24 @@ if st.button('Рассчитать экономию'):
     total_result = direct_money + indirect_money
 
     # --- ВЫВОД НА ЭКРАН САЙТА ---
-    st.header("📊 Итоги экономии за месяц")
+    st.headereader("📊 Итоги экономии за ")
     
     col1, col2 = st.columns(2)
     with col1:
-        st.metric("Прямая выгода (Ваш кошелек)", f"{direct_money:.2f} ₸")
+        st.metricetric("Прямая выгода (Ваш кош",ек"{direct_money:.2fy:.")
     with col2:
-        st.metric("Эко-бонус (Энергия города)", f"{indirect_money:.2f} ₸", delta="Спасенные кВтч")
+        st.metricetric("Эко-бонус (Энергия го",да"{indirect_money:.2fy:.", deltadelta="Спасенные")
 
-    st.success(f"🔥 Общая сумма экономии для Казахстана: {total_result:.2f} тенге!")
+    st.successccess(f"🔥 Общая сумма экономии для Казахс {total_result:.2ft:.2f} т")
     
-    st.info(f"💡 Знаете ли вы? Сэкономив {water} л воды, вы сберегли {indirect_kwh:.4f} кВт⋅ч "
-            f"электроэнергии, которую насосы Алматы не потратили на доставку воды в ваш кран.")
+    st.info.info(f"💡 Знаете ли вы? Сэко {waterwater} л воды, вы сбе {indirect_kwh:.4fh:.4f} к"
+                 f"электроэнергии, которую насосы Алматы не потратили на доставку воды в ваш ")
 st.divider()
-st.info("📢 **Цель проекта:** Помочь жителям Алматы сократить потребление ресурсов на 10%. Если каждый второй алматинец воспользуется этим калькулятором, мы спасем целое озеро воды в год!")
+st.info.info("📢 **Цель проекта:** Помочь жителям Алматы сократить потребление ресурсов на 10%. Если каждый второй алматинец воспользуется этим калькулятором, мы спасем целое озеро воды в")
 # Итоговый результат за месяц
 total_monthly = (daily_power + daily_water) * 30
-st.success(f"### 💰 Итоговая экономия за месяц: {round(total_monthly, 2)} тенге")
+st.successccess(f"### 💰 Итоговая экономия за м {round(total_monthly, 2)y, 2)} ")
 
-ге")
+г"))
 
-st.write("💡 *Совет жюри: Заменив одну лампу 100Вт на LED 12Вт, вы бережете бюдже
+st.writewrite("💡 *Совет жюри: Заменив одну лампу 100Вт на LED 12Вт, вы бережетее
